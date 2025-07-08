@@ -46,3 +46,4 @@ coverage/
 # Test coverage
 coverage/
 .nyc_output/
+get-token.js

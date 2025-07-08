@@ -2,6 +2,7 @@ require('dotenv').config();
 const axios = require('axios');
 const cron = require('node-cron');
 const fs = require('fs');
+const { getValidAccessToken, loadToken } = require('./oauth');
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
@@ -17,8 +18,18 @@ if (fs.existsSync(enviadosPath)) {
 
 async function buscarProdutos() {
   try {
+    const token = await loadToken();
     const url = `https://api.mercadolibre.com/sites/MLB/search?q=${encodeURIComponent(KEYWORD)}`;
-    const { data } = await axios.get(url);
+    const { data } = await axios.get(url, {
+    headers: {
+        Authorization: `Bearer ${token.access_token}`
+    }
+});
+
+    if (!data.results || data.results.length === 0) {
+      console.log(`[${new Date().toLocaleTimeString()}] Nenhum produto encontrado para "${KEYWORD}".`);
+      return;
+    }
 
     const novosProdutos = data.results.filter(prod => 
       prod.price <= MAX_PRICE && !enviados.includes(prod.id)
