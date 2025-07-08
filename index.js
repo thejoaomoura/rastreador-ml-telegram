@@ -57,4 +57,11 @@ async function enviarTelegram(mensagem) {
 cron.schedule('*/30 * * * *', buscarProdutos);
 
 // Executa imediatamente ao iniciar
-buscarProdutos();
+(async () => {
+  try {
+    await buscarProdutos();
+  } catch (err) {
+    console.error("Erro inesperado no script:", err.message);
+    process.exit(1); // Isso força o erro ser visível no GitHub Actions
+  }
+})();
