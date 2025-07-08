@@ -1,0 +1,16 @@
+services:
+  - type: worker
+    name: rastreador-ml-telegram
+    runtime: node
+    buildCommand: 'npm install'
+    startCommand: 'node index.js'
+    autoDeploy: true
+    envVars:
+      - key: TELEGRAM_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+      - key: MAX_PRICE
+        sync: false
+      - key: KEYWORD
+        sync: false
